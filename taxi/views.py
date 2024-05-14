@@ -29,15 +29,13 @@ def index(request):
     return render(request, "taxi/index.html", context=context)
 
 
-def assign_driver_view(request, pk):
+def assign_remove_driver_view(request, pk):
     car = Car.objects.get(pk=pk)
-    car.drivers.add(request.user)
-    return redirect("taxi:car-detail", pk=pk)
-
-
-def remove_driver_view(request, pk):
-    car = Car.objects.get(pk=pk)
-    car.drivers.remove(request.user)
+    user = request.user
+    if car.drivers.filter(pk=user.pk).exists():
+        car.drivers.remove(user)
+    else:
+        car.drivers.add(user)
     return redirect("taxi:car-detail", pk=pk)
 
 
